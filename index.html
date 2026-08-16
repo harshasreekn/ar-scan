@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AR Experience</title>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image.prod.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      * { margin: 0; padding: 0; }
+      body { overflow: hidden; background: #000; }
+      #tap {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: #111;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        font-family: Arial;
+        text-align: center;
+        padding: 20px;
+      }
+      #tap button {
+        margin-top: 30px;
+        padding: 18px 40px;
+        font-size: 20px;
+        border-radius: 12px;
+        border: none;
+        background: white;
+        color: black;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tap">
+      <p style="font-size:22px;">📷 AR Experience</p>
+      <p style="font-size:13px; color:#aaa; margin-top:10px;">Tap below then point camera at your photo</p>
+      <button id="startBtn">Tap to Start</button>
+    </div>
+
+    <a-scene
+      mindar-image="imageTargetSrc: targets.mind;"
+      color-space="sRGB"
+      renderer="colorManagement: true"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
+      <a-assets>
+        <video id="vid1" src="video1.mp4" playsinline loop webkit-playsinline preload="none"></video>
+        <video id="vid2" src="video2.mp4" playsinline loop webkit-playsinline preload="none"></video>
+        <video id="vid3" src="video3.mp4" playsinline loop webkit-playsinline preload="none"></video>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-video src="#vid1" position="0 0 0.001" width="1" height="0.552"></a-video>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 1">
+        <a-video src="#vid2" position="0 0 0.001" width="1" height="0.552"></a-video>
+      </a-entity>
+
+      <a-entity mindar-image-target="targetIndex: 2">
+        <a-video src="#vid3" position="0 0 0.001" width="1" height="0.552"></a-video>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      const videos = [
+        document.getElementById('vid1'),
+        document.getElementById('vid2'),
+        document.getElementById('vid3')
+      ];
+
+      const startBtn = document.getElementById('startBtn');
+      const tapScreen = document.getElementById('tap');
+
+      // Stop all videos
+      videos.forEach(v => { v.pause(); v.currentTime = 0; });
+
+      startBtn.addEventListener('click', () => {
+        tapScreen.style.display = 'none';
+        // Unlock audio on all videos
+        videos.forEach(v => { v.muted = false; });
+      });
+
+      // Target 0 = photo1 = video1
+      const target0 = document.querySelectorAll('[mindar-image-target]')[0];
+      target0.addEventListener('targetFound', () => {
+        videos[0].currentTime = 0;
+        videos[0].muted = false;
+        videos[0].play();
+      });
+      target0.addEventListener('targetLost', () => {
+        videos[0].pause();
+        videos[0].currentTime = 0;
+      });
+
+      // Target 1 = photo2 = video2
+      const target1 = document.querySelectorAll('[mindar-image-target]')[1];
+      target1.addEventListener('targetFound', () => {
+        videos[1].currentTime = 0;
+        videos[1].muted = false;
+        videos[1].play();
+      });
+      target1.addEventListener('targetLost', () => {
+        videos[1].pause();
+        videos[1].currentTime = 0;
+      });
+
+      // Target 2 = photo3 = video3
+      const target2 = document.querySelectorAll('[mindar-image-target]')[2];
+      target2.addEventListener('targetFound', () => {
+        videos[2].currentTime = 0;
+        videos[2].muted = false;
+        videos[2].play();
+      });
+      target2.addEventListener('targetLost', () => {
+        videos[2].pause();
+        videos[2].currentTime = 0;
+      });
+    </script>
+  </body>
+</html>
